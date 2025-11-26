@@ -1,88 +1,213 @@
+# Product Management System
 
+## Table of Contents
+- [Overview](#overview)
+- [Features](#features)
+- [Technologies Used](#technologies-used)
+- [Installation and Setup](#installation-and-setup)
+- [Usage](#usage)
+- [Project Structure](#project-structure)
+- [Security](#security)
+- [Database](#database)
+
+## Overview
+
+Welcome to the Product Management System! This modern web application allows you to efficiently manage your product inventory with an intuitive and secure interface. Whether you're a simple user browsing products or an administrator managing the entire catalog, this application meets all your management needs.
+
+## Features
+
+### For All Users
+- Secure authentication system
+- Responsive interface adapted to all devices
+- Modern design with Bootstrap
+- Product list visualization
+
+### For Standard Users
+- Product catalog browsing
+- Product details viewing (name, price, quantity)
+
+### For Administrators
+- Add new products
+- Delete existing products
+- Real-time data validation
+- Secure access to sensitive features
+
+## Technologies Used
+
+| Technology | Version | Usage |
+|------------|---------|-------|
+| Java | 17+ | Main language |
+| Spring Boot | 3.x | Backend framework |
+| Spring Security | 3.x | Authentication & authorization |
+| H2 Database | 2.x | In-memory database |
+| Thymeleaf | 3.x | Template engine |
+| Bootstrap | 5.3.2 | CSS framework |
+| Lombok | 1.18+ | Boilerplate code reduction |
+
+## Installation and Setup
+
+### Prerequisites
+Before starting, make sure you have installed:
+- JDK 17 or higher
+- Maven 3.6 or higher
+- A modern web browser
+
+### Launching the Application
+
+1. **Download the project**
+   ```bash
+   git clone [your-repository]
+   cd bdcc1-rania
+   ```
+
+2. **Build and run**
+   ```bash
+   # With Maven
+   mvn clean spring-boot:run
+   
+   # Or build the JAR then execute it
+   mvn clean package
+   java -jar target/bdcc1-rania-1.0.0.jar
+   ```
+
+3. **Access the application**
+   - Main application: http://localhost:8099
+   - H2 Console: http://localhost:8099/h2-console
+     - JDBC URL: `jdbc:h2:mem:products-db`
+     - Username: `sa`
+     - Password: (leave empty)
+
+## Usage
+
+### Connecting to the Application
+
+Several accounts are available to test different features:
+
+| Role | Username | Password | Permissions |
+|------|----------|----------|-------------|
+| User | `user1` or `user2` | `1234` | Product viewing |
+| Administrator | `admin` | `1234` | Full product management |
+
+### Application Navigation
+
+1. **Login page**: Enter your credentials
+2. **Home page**: List of all available products
+3. **For administrators**:
+   - "New Product" button to add a product
+   - "Delete" button on each row to remove a product
+
+### Adding a New Product
+
+1. Click the "New Product" button (visible only to administrators)
+2. Fill out the form:
+   - Name: 3 to 50 characters (required)
+   - Price: ≥ 0 (required)
+   - Quantity: ≥ 1 (required)
+3. Click "Save" to register
+
+## Project Structure
+
+```
+bdcc1-rania/
+├── src/main/java/ma/mundia/bdcc1rania/
+│   ├── Bdcc1RaniaApplication.java      # Main class
+│   ├── entities/
+│   │   └── Product.java               # JPA entity
+│   ├── repository/
+│   │   └── ProductRepository.java     # Spring Data repository
+│   ├── web/
+│   │   └── ProductController.java     # MVC controller
+│   └── sec/
+│       └── SecurityConfig.java        # Security configuration
+├── src/main/resources/
+│   ├── templates/                     # Thymeleaf views
+│   │   ├── Layout1.html               # Main layout
+│   │   ├── Products.html              # Product list
+│   │   ├── New-Product.html           # Add form
+│   │   ├── login.html                 # Login page
+│   │   └── notAuthorized.html         # Not authorized page
+│   ├── application.properties         # Configuration
+│   └── data.sql                       # Initial data (optional)
+└── pom.xml                           # Maven dependencies
+```
+
+## Security
+
+The application implements robust security with:
+
+### Security Mechanisms
+- Authentication via custom form
+- Role-based authorization (USER/ADMIN)
+- Password hashing with BCrypt
+- CSRF protection enabled
+- Secure session management
+
+### Access Controls
+- `/user/**`: Accessible to authenticated users
+- `/admin/**`: Reserved for administrators
+- `/public/**`: Public access
+- `/login`: Accessible to all
+
+## Database
+
+### H2 Configuration
+- Type: In-memory database
+- Persistence: Data is reset on restart
+- Console: Web interface available for debug
+
+### Table Structure
+```sql
+CREATE TABLE PRODUCT (
+    ID BIGINT AUTO_INCREMENT PRIMARY KEY,
+    NAME VARCHAR(50) NOT NULL,
+    PRICE DOUBLE NOT NULL,
+    QUANTITY DOUBLE NOT NULL
+);
+```
+
+### Initial Data
+The application automatically pre-fills 3 products at startup:
+1. Computer - 5,400.00 (12 units)
+2. Printer - 1,200.00 (11 units)
+3. Smart Phone - 12,000.00 (33 units)
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Port already in use**
+   ```
+   Error: Port 8099 already in use
+   ```
+   Solution: Modify `server.port` in `application.properties`
+
+2. **Connection error**
+   ```
+   Unable to connect to database
+   ```
+   Solution: Check that H2 console is accessible at `/h2-console`
+
+3. **Access denied**
+   ```
+   Access Denied
+   ```
+   Solution: Use the provided credentials with the appropriate role
+
+### Logs and Debug
+- SQL queries are displayed in the console
+- Encoded passwords are logged at startup
+- Use H2 console to inspect the database
+
+## Future Development
+
+Potential improvements:
+- Result pagination
+- Search functionality
+- Data export
+- Email notifications
+- REST API versioning
+- Docker containerization
 
 ---
 
-# README – Projet NAC avec PacketFence & Active Directory
-
-Ce projet a pour objectif de mettre en place un environnement complet permettant de comprendre et d'expérimenter le fonctionnement d’un système NAC (Network Access Control) basé sur PacketFence, intégré à un Active Directory, avec authentification 802.1X via RADIUS.
-
-L’ensemble tourne dans un environnement virtualisé composé de trois machines :
-– une VM PacketFence,
-– une VM Windows Server pour l’Active Directory,
-– et une VM Windows Client pour tester l’accès réseau authentifié.
-
----
-
-## 1. Description du projet
-
-L’idée générale est de simuler un vrai réseau d’entreprise dans lequel un utilisateur doit s’authentifier avant d’accéder au réseau. PacketFence joue le rôle de serveur NAC et RADIUS, tandis que Windows Server fournit l’annuaire Active Directory et les services DNS. Ensuite, NPS (Network Policy Server) assure la communication RADIUS entre AD et PacketFence.
-
-À la fin, seuls les utilisateurs correctement enregistrés dans l’AD pourront s’authentifier sur le réseau via 802.1X. Les autres seront bloqués.
-
----
-
-## 2. Environnement virtuel
-
-L’architecture de test repose sur trois machines virtuelles :
-
-* **PacketFence** : installé à partir de l’ISO, il sert à la fois de serveur NAC et de serveur RADIUS.
-  Il possède deux interfaces : une pour Internet et une pour le réseau interne où sont connectés le client et le serveur AD.
-
-* **Windows Server (2019 ou 2022)** : il héberge Active Directory, DNS et NPS.
-  C’est lui qui gère le domaine `nac.local` et les comptes utilisateurs.
-
-* **Windows 10 / Windows 11 Client** : poste utilisateur classique qui servira à tester l’authentification 802.1X.
-
----
-
-## 3. Étapes principales du projet
-
-### 3.1 Installation et configuration de l’Active Directory
-
-On commence par installer Windows Server et lui donner un rôle central dans l’infrastructure.
-Une fois le système installé, on attribue une adresse IP fixe et on installe les rôles suivants :
-Active Directory Domain Services (AD DS), DNS et NPS.
-
-On crée ensuite le domaine **nac.local**, qui sera utilisé par PacketFence pour authentifier les utilisateurs.
-Deux comptes sont créés dans l’AD :
-un utilisateur valide (user1) autorisé à accéder au réseau, et un utilisateur invalide (user2) qui permet de tester le refus d’accès.
-
----
-
-### 3.2 Configuration de NPS et ajout de PacketFence comme client RADIUS
-
-Une fois le domaine en place, on configure NPS.
-La première étape consiste à déclarer le serveur PacketFence comme « client RADIUS » dans NPS, en utilisant l’adresse IP de son interface LAN et un secret partagé.
-Ce secret doit être le même dans PacketFence.
-
-Ensuite, on crée une « Network Policy » autorisant l’authentification EAP/PEAP.
-Dans cette règle, on précise que seuls les utilisateurs appartenant au domaine `nac.local` (ou à un groupe défini) sont autorisés. Cela permet de filtrer les accès.
-
----
-
-### 3.3 Configuration de PacketFence
-
-Côté PacketFence, on active la fonction RADIUS et on ajoute l’Active Directory comme source d’authentification.
-On renseigne l’adresse du contrôleur de domaine, le nom du domaine ainsi que les identifiants d’un compte ayant les droits nécessaires.
-
-On configure ensuite PacketFence pour utiliser 802.1X, puis on vérifie que la communication RADIUS avec NPS fonctionne grâce au secret partagé configuré précédemment.
-
----
-
-### 3.4 Préparation du poste client
-
-Sur la machine Windows Client, on rejoint le domaine `nac.local`, puis on active l’authentification 802.1X sur l’interface réseau.
-Le client utilisera PEAP pour s’authentifier.
-Lors du test, user1 doit pouvoir se connecter, tandis que user2 sera refusé.
-
----
-
-## 4. Résultat attendu
-
-À la fin du projet, l’environnement NAC doit être pleinement fonctionnel.
-L’utilisateur valide pourra accéder au réseau après authentification 802.1X, tandis que les comptes non autorisés seront bloqués par la politique définie dans NPS.
-Ce projet permet ainsi de comprendre concrètement le rôle de chaque composant (AD, DNS, RADIUS, PacketFence) et leur interaction dans un système de contrôle d’accès réseau.
-
----
-
-
+Developed with Spring Boot and Bootstrap
