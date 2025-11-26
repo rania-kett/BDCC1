@@ -36,17 +36,25 @@ public class SecurityConfig {
                 User.withUsername("admin").password(passwordEncoder().encode("1234")).roles("USER","ADMIN").build()
         );
     }
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .formLogin(fl->fl.loginPage("/login").permitAll())
+                .formLogin(fl->fl
+                        .loginPage("/login")
+                        .permitAll()
+                        .defaultSuccessUrl("/user/index", true)
+                        .failureUrl("/login?error=true")
+                )
                 .csrf(Customizer.withDefaults())
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/user/**").hasRole("USER"))
-                //.authorizeHttpRequests(ar->ar.requestMatchers("/admin/**").hasRole("ADMIN"))
-                .authorizeHttpRequests(ar->ar.requestMatchers("/public/**","/webjars/**").permitAll())
+                .authorizeHttpRequests(ar->ar.requestMatchers("/public/**","/webjars/**", "/login").permitAll())
                 .authorizeHttpRequests(ar->ar.anyRequest().authenticated())
                 .exceptionHandling(eh->eh.accessDeniedPage("/notAuthorized"))
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout=true")
+                        .permitAll()
+                )
                 .build();
-
     }
 }

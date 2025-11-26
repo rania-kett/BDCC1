@@ -33,18 +33,21 @@ public class ProductController {
     public String home() {
         return "redirect:/user/index";
     }
+
     @PostMapping("/admin/delete")
     @PreAuthorize("hasRole('ADMIN')")
     public String delete(@RequestParam(name= "id") Long id){
         productRepository.deleteById(id);
         return "redirect:/user/index";
     }
+
     @GetMapping("/admin/newProduct")
     @PreAuthorize("hasRole('ADMIN')")
     public String newProduct(Model model){
         model.addAttribute("product", new Product());
         return"New-Product";
     }
+
     @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/admin/saveProduct")
     public String saveProduct(@Valid Product product, BindingResult bindingResult, Model model){
@@ -54,14 +57,23 @@ public class ProductController {
         productRepository.save(product);
         return "redirect:/admin/newProduct";
     }
+
     @GetMapping("/notAuthorized")
     public String notAuthorized(){
         return "notAuthorized";
     }
+
     @GetMapping("/login")
-    public String login(){
+    public String login(Model model, String error, String logout) {
+        if (error != null) {
+            model.addAttribute("error", "Nom d'utilisateur ou mot de passe incorrect");
+        }
+        if (logout != null) {
+            model.addAttribute("message", "Vous avez été déconnecté avec succès");
+        }
         return "login";
     }
+
     @GetMapping("/logout")
     public String logout(HttpSession session){
         session.invalidate();
